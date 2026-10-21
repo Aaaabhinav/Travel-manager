@@ -1,0 +1,235 @@
+{
+  "vhosts": [
+    { "name": "/" }
+  ],
+  "users": [
+    {
+      "name": "travel",
+      "password": "travel_pass",
+      "tags": "administrator"
+    }
+  ],
+  "permissions": [
+    {
+      "user": "travel",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "exchanges": [
+    {
+      "name": "travel.events",
+      "vhost": "/",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false
+    },
+    {
+      "name": "travel.events.dlx",
+      "vhost": "/",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false
+    }
+  ],
+  "queues": [
+    {
+      "name": "trip.commands",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-dead-letter-exchange": "travel.events.dlx",
+        "x-dead-letter-routing-key": "dlq.trip.commands"
+      }
+    },
+    {
+      "name": "booking.saga.replies",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-dead-letter-exchange": "travel.events.dlx",
+        "x-dead-letter-routing-key": "dlq.booking.saga.replies"
+      }
+    },
+    {
+      "name": "recommendation.events",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-dead-letter-exchange": "travel.events.dlx",
+        "x-dead-letter-routing-key": "dlq.recommendation.events"
+      }
+    },
+    {
+      "name": "trip.events",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-dead-letter-exchange": "travel.events.dlx",
+        "x-dead-letter-routing-key": "dlq.trip.events"
+      }
+    },
+    {
+      "name": "booking.events",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-dead-letter-exchange": "travel.events.dlx",
+        "x-dead-letter-routing-key": "dlq.booking.events"
+      }
+    },
+    {
+      "name": "notification.events",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-dead-letter-exchange": "travel.events.dlx",
+        "x-dead-letter-routing-key": "dlq.notification.events"
+      }
+    },
+    {
+      "name": "dlq.trip.commands",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false
+    },
+    {
+      "name": "dlq.booking.saga.replies",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false
+    },
+    {
+      "name": "dlq.recommendation.events",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false
+    },
+    {
+      "name": "dlq.trip.events",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false
+    },
+    {
+      "name": "dlq.booking.events",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false
+    },
+    {
+      "name": "dlq.notification.events",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false
+    }
+  ],
+  "bindings": [
+    {
+      "source": "travel.events",
+      "vhost": "/",
+      "destination": "trip.commands",
+      "destination_type": "queue",
+      "routing_key": "saga.trip.command.#"
+    },
+    {
+      "source": "travel.events",
+      "vhost": "/",
+      "destination": "booking.saga.replies",
+      "destination_type": "queue",
+      "routing_key": "saga.booking.reply.#"
+    },
+    {
+      "source": "travel.events",
+      "vhost": "/",
+      "destination": "recommendation.events",
+      "destination_type": "queue",
+      "routing_key": "event.booking.#"
+    },
+    {
+      "source": "travel.events",
+      "vhost": "/",
+      "destination": "recommendation.events",
+      "destination_type": "queue",
+      "routing_key": "event.trip.#"
+    },
+    {
+      "source": "travel.events",
+      "vhost": "/",
+      "destination": "trip.events",
+      "destination_type": "queue",
+      "routing_key": "event.booking.confirmed"
+    },
+    {
+      "source": "travel.events",
+      "vhost": "/",
+      "destination": "trip.events",
+      "destination_type": "queue",
+      "routing_key": "event.booking.cancelled"
+    },
+    {
+      "source": "travel.events",
+      "vhost": "/",
+      "destination": "booking.events",
+      "destination_type": "queue",
+      "routing_key": "event.trip.deleted"
+    },
+    {
+      "source": "travel.events",
+      "vhost": "/",
+      "destination": "notification.events",
+      "destination_type": "queue",
+      "routing_key": "event.#"
+    },
+    {
+      "source": "travel.events.dlx",
+      "vhost": "/",
+      "destination": "dlq.trip.commands",
+      "destination_type": "queue",
+      "routing_key": "dlq.trip.commands"
+    },
+    {
+      "source": "travel.events.dlx",
+      "vhost": "/",
+      "destination": "dlq.booking.saga.replies",
+      "destination_type": "queue",
+      "routing_key": "dlq.booking.saga.replies"
+    },
+    {
+      "source": "travel.events.dlx",
+      "vhost": "/",
+      "destination": "dlq.recommendation.events",
+      "destination_type": "queue",
+      "routing_key": "dlq.recommendation.events"
+    },
+    {
+      "source": "travel.events.dlx",
+      "vhost": "/",
+      "destination": "dlq.trip.events",
+      "destination_type": "queue",
+      "routing_key": "dlq.trip.events"
+    },
+    {
+      "source": "travel.events.dlx",
+      "vhost": "/",
+      "destination": "dlq.booking.events",
+      "destination_type": "queue",
+      "routing_key": "dlq.booking.events"
+    },
+    {
+      "source": "travel.events.dlx",
+      "vhost": "/",
+      "destination": "dlq.notification.events",
+      "destination_type": "queue",
+      "routing_key": "dlq.notification.events"
+    }
+  ]
+}

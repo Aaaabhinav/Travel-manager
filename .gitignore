@@ -1,0 +1,152 @@
+# ==============================================================================
+# Travel & Trip Management Platform - .gitignore
+# Covers: Node.js, React/Vite, Go, Java/Maven, Python, C++/CMake, Docker, IDEs
+# ==============================================================================
+
+# ---- Environment & Secrets ----
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+*.key
+*.cert
+
+# Keep example files
+!.env.example
+
+# ---- Node.js / Frontend / Trip Service ----
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Vite / React / Frontend Build Outputs
+dist/
+dist-ssr/
+build/
+.parcel-cache/
+coverage/
+*.lcov
+.turbo/
+
+# ---- Go (Booking Service) ----
+# Binaries
+booking-service
+booking-service.exe
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+vendor/
+
+# ---- Python (Recommendation Service) ----
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ---- Java / Spring Boot / Maven (User Service) ----
+target/
+*.class
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+.mvn/wrapper/maven-wrapper.jar
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.flattened-pom.xml
+
+# ---- C++ / CMake / Crow (Route Service) ----
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+cmake_install.cmake
+Makefile
+*.cmake
+build/
+bin/
+*.o
+*.obj
+*.lib
+*.a
+*.pdb
+*.ilk
+route-service
+route-service.exe
+
+# ---- Docker Volumes & Local DB Data ----
+data/
+*_data/
+mysql_data/
+postgres_data/
+cassandra_data/
+redis_data/
+rabbitmq_data/
+
+# ---- Logs ----
+logs/
+*.log
+
+# ---- IDEs & Editors ----
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+.project
+.classpath
+.settings/
+
+# ---- Operating System Files ----
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+[Dd]esktop.ini
