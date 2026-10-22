@@ -78,3 +78,8 @@ def start_rabbitmq_consumer():
 
     thread = threading.Thread(target=_run, daemon=True)
     thread.start()
+
+#Exchange & Queue: Declares a durable topic exchange named travel.events and a durable queue named recommendation_queue.
+
+#Routing Keys: Binds the queue to the exchange with two wildcard keys: 
+# event.* and booking.*, allowing it to capture a wide variety of domain events.

@@ -109,3 +109,9 @@ class RecommendationEngine:
         return results
 
 recommendation_engine = RecommendationEngine()
+
+#Base Baseline Score (75.0 points): Every destination in the catalog starts with an initial default score of 75.0 and is labeled as a "Popular destination."
+#Category Match Bonus (+20.0 points): If a destination's category (e.g., beach) matches any category stored in the user's preferences from Cassandra, it receives a +20.0 boost.
+#Budget-Friendly Bonus (+5.0 points): If a destination's daily cost is $100.0 or less, it receives an extra +5.0 boost for being budget-friendly.
+#Score Capping (Max 99.0): The calculated score is capped at a maximum of 99.0, regardless of how many criteria are met.
+#Final Ranking: All destinations are sorted and recommended to the user in descending order (highest score first) so the most relevant options appear at the top.

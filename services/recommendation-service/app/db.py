@@ -10,6 +10,8 @@ logger = logging.getLogger("recommendation-service.db")
 session = None
 cluster = None
 
+#session and cluster: maintained globally to implement a Singleton pattern. 
+#Once connected, the existing session is reused across your application to avoid the overhead of opening new connections.
 def get_cassandra_session():
     global session, cluster
     if session is not None:
@@ -23,7 +25,6 @@ def get_cassandra_session():
             profile = ExecutionProfile(
                 load_balancing_policy=DCAwareRoundRobinPolicy(local_dc=settings.CASSANDRA_DC)
             )
-            
             cluster = Cluster(
                 [settings.CASSANDRA_HOST],
                 port=settings.CASSANDRA_PORT,
@@ -91,3 +92,16 @@ def init_tables(sess):
             PRIMARY KEY (user_id, recommended_at)
         ) WITH CLUSTERING ORDER BY (recommended_at DESC);
     """)
+
+#ExecutionProfile: A configuration container in the Cassandra driver that bundles query settings—such as timeouts, 
+#consistency levels, and load-balancing policies—so they can be easily reused across database requests.
+
+#DCAwareRoundRobinPolicy: A load-balancing routing strategy that prioritizes nodes within a designated local data center 
+#using round-robin distribution to minimize network latency and cross-datacenter traffic.
+
+#Key Reasons to Use Cassandra for Real-Time Analytics:
+# Massive Write Throughput
+# Linear Horizontal Scalability
+# No Single Point of Failure (SPOF)
+# Global Multi-Data Center Availability
+# Low-Latency Point Lookups
