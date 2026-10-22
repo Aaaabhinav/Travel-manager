@@ -22,49 +22,8 @@ A production-grade, enterprise-ready **polyglot microservices platform** enginee
 
 The system strictly enforces the **Database-per-Service** pattern, decoupling domain boundaries and ensuring failure isolation. Communication between services occurs through **synchronous REST** (via Kong API Gateway) and **asynchronous event-driven messaging** (via RabbitMQ topic exchanges and dead-letter queues).
 
-```
-                               ┌──────────────────────────────────────────────┐
-                               │     React 18 Frontend (Vite + Tailwind)      │
-                               │           http://localhost:3000              │
-                               └──────────────────────┬───────────────────────┘
-                                                      │ HTTP / REST
-                                                      ▼
-                               ┌──────────────────────────────────────────────┐
-                               │           Kong API Gateway (:8000)           │
-                               │  - JWT Verification & Header Enrichment      │
-                               │  - Rate Limiting, Route Proxying & CORS      │
-                               └──────┬───────┬────────┬────────┬───────┬─────┘
-                                      │       │        │        │       │
-              ┌───────────────────────┘       │        │        │       └────────────────────────┐
-              ▼                               ▼        │        ▼                                ▼
-     ┌─────────────────┐             ┌─────────────────┤┌─────────────────┐             ┌─────────────────┐
-     │  User Service   │             │  Trip Service   ││ Booking Service │             │  Route Service  │
-     │  Java 17 Spring │             │ Node.js Express ││    Go 1.21 Gin  │             │   C++20 Crow    │
-     │    Port 8081    │             │    Port 8082    ││    Port 8083    │             │    Port 8085    │
-     └────────┬────────┘             └────────┬────────┘└───────┬─────────┘             └────────┬────────┘
-              │                               │                 │                                │
-              ▼                               ▼                 ▼                                ▼
-        ┌───────────┐                   ┌───────────┐     ┌───────────┐                    ┌───────────┐
-        │ MySQL 8.0 │                   │PostgreSQL │     │PostgreSQL │                    │  Redis 7  │
-        │(Auth & DB)│                   │(Trip DB)  │     │(Saga & DB)│                    │(Cache/TTL)│
-        └───────────┘                   └─────┬─────┘     └─────┬─────┘                    └───────────┘
-                                              │                 │
-                                              │   ▲       ▲     │
-                                              │   │       │     │
-                                              ▼   │       │   ┌─┴────────────────┐
-                                      ┌───────────┴───────┴───┴──────┐           ▼
-                                      │      RabbitMQ Event Bus      │  ┌─────────────────┐
-                                      │   Exchange: travel.events    │  │ Recommendation  │
-                                      │  Topic & Dead-Letter Queues  │  │ Python FastAPI  │
-                                      └──────────────────────────────┘  │    Port 8084    │
-                                                                        └────────┬────────┘
-                                                                                 │
-                                                                                 ▼
-                                                                           ┌───────────┐
-                                                                           │ Cassandra │
-                                                                           │(Analytics)│
-                                                                           └───────────┘
-```
+![arch](asset/architecture.png.png)
+
 
 ---
 
@@ -184,7 +143,7 @@ SELECT id, username, email, role, created_at FROM users;
 SELECT * FROM user_roles;
 EXIT;
 ```
-> **Viva Talking Point:** Passwords in the `users` table are hashed using salted BCrypt. Credentials never leave the User Service boundary.
+> Passwords in the `users` table are hashed using salted BCrypt. Credentials never leave the User Service boundary.
 
 ---
 
@@ -206,7 +165,7 @@ SELECT id, name, category, daily_cost FROM destinations LIMIT 5;
 SELECT id, trip_id, booking_id, status, reserved_at, released_at FROM trip_reservations;
 \q
 ```
-> **Viva Talking Point:** Notice `trip_reservations`. When a Saga booking starts, status is `RESERVED`. When cancelled, it transitions to `RELEASED`.
+> Notice `trip_reservations`. When a Saga booking starts, status is `RESERVED`. When cancelled, it transitions to `RELEASED`.
 
 ---
 
@@ -236,7 +195,7 @@ SELECT id, booking_id, amount, status, payment_method FROM payments;
 SELECT id, event_id, event_type, status, created_at FROM outbox_events ORDER BY id DESC LIMIT 5;
 \q
 ```
-> **Viva Talking Point:** `saga_steps` proves the exact progression of steps (`RESERVE_TRIP_SLOT`, `PAYMENT`, `CONFIRM_BOOKING`), and records compensation steps (`CANCEL_RESERVATION`, `REFUND_PAYMENT`) on failure or cancellation.
+> `saga_steps` proves the exact progression of steps (`RESERVE_TRIP_SLOT`, `PAYMENT`, `CONFIRM_BOOKING`), and records compensation steps (`CANCEL_RESERVATION`, `REFUND_PAYMENT`) on failure or cancellation.
 
 ---
 
@@ -256,7 +215,7 @@ SELECT destination_id, category, score, reason FROM destination_scores LIMIT 10;
 SELECT user_id, destination_id, interaction_type, timestamp FROM user_interactions LIMIT 10;
 EXIT;
 ```
-> **Viva Talking Point:** Cassandra is selected for its high write throughput and horizontal scaling for logging continuous clickstream events without bottlenecking relational databases.
+> Cassandra is selected for its high write throughput and horizontal scaling for logging continuous clickstream events without bottlenecking relational databases.
 
 ---
 
@@ -276,7 +235,7 @@ GET "route:1:2:3"
 TTL "route:1:2:3"
 EXIT;
 ```
-> **Viva Talking Point:** Caching dynamic TSP route calculations prevents redundant $O(n!)$ combinatorial operations on repeated requests.
+> Caching dynamic TSP route calculations prevents redundant $O(n!)$ combinatorial operations on repeated requests.
 
 ---
 
