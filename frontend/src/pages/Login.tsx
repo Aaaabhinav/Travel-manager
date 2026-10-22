@@ -5,8 +5,8 @@ import { apiClient } from '../api/client';
 import { Compass, Lock, Mail, ArrowRight, AlertCircle } from 'lucide-react';
 
 export const Login: React.FC = () => {
-  const [email, setEmail] = useState('demo@example.com');
-  const [password, setPassword] = useState('password123');
+  const [email, setEmail] = useState('demo@travel.com');
+  const [password, setPassword] = useState('demo123');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 

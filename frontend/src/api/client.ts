@@ -1,10 +1,24 @@
 /// <reference types="vite/client" />
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
+const getApiBaseUrl = (): string => {
+  if (import.meta.env.VITE_API_BASE_URL) {
+    return import.meta.env.VITE_API_BASE_URL;
+  }
+  if (typeof window !== 'undefined') {
+    // If accessed through Nginx (port 3000 or production port 80):
+    // Use relative '/api' so it works identically on localhost, LAN IP (e.g. 192.168.x.x), or domain
+    if (window.location.port === '3000' || window.location.port === '80' || !window.location.port) {
+      return '/api';
+    }
+    // Fallback for standalone vite dev server (port 5173):
+    return `http://${window.location.hostname}:8000/api`;
+  }
+  return 'http://localhost:8000/api';
+};
 
 export const apiClient = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: getApiBaseUrl(),
   headers: {
     'Content-Type': 'application/json',
   },
